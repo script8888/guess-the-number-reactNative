@@ -69,7 +69,13 @@ export default function App() {
       <GameScreen userChoice={userNumber} onGameOver={gameOverHandler} />
     );
   } else if (rounds > 0) {
-    content = <GameOverScreen startOver={startOverHandler} round={rounds} />;
+    content = (
+      <GameOverScreen
+        startOver={startOverHandler}
+        guessedNumber={userNumber}
+        round={rounds}
+      />
+    );
   }
   return (
     <View onLayout={onLayoutRootView} style={styles.screen}>
