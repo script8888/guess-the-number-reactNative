@@ -45,7 +45,11 @@ function StartGameScreen(props) {
     confirmedOutput = (
       <View>
         <Text style={styles.chosenNumber}>Chosen Number: {selectedNumber}</Text>
-        <Button title="Start Game" color={Colors.primary} />
+        <Button
+          onPress={() => props.onStartGame(selectedNumber)}
+          title="Start Game"
+          color={Colors.primary}
+        />
       </View>
     );
   }
