@@ -5,13 +5,13 @@ import {
   Text,
   TouchableWithoutFeedback,
   Keyboard,
-  Button,
   Alert,
 } from "react-native";
 import Card from "../components/Card";
 import Colors from "../constants/colors";
 import Input from "../components/Input";
 import BodyText from "../components/BodyText";
+import MainButton from "../components/MainButton";
 
 function StartGameScreen(props) {
   const [enteredValue, setEnteredValue] = useState("");
@@ -46,11 +46,12 @@ function StartGameScreen(props) {
     confirmedOutput = (
       <View>
         <Text style={styles.chosenNumber}>Chosen Number: {selectedNumber}</Text>
-        <Button
-          onPress={() => props.onStartGame(selectedNumber)}
-          title="Start Game"
+        <MainButton
           color={Colors.primary}
-        />
+          onPress={() => props.onStartGame(selectedNumber)}
+        >
+          Start Game
+        </MainButton>
       </View>
     );
   }
@@ -74,18 +75,17 @@ function StartGameScreen(props) {
 
           <View style={styles.buttonContainer}>
             <View style={styles.button}>
-              <Button
-                title="Reset"
-                onPress={resetInputHandler}
+              <MainButton
                 color={Colors.accentColor}
-              />
+                onPress={resetInputHandler}
+              >
+                Reset
+              </MainButton>
             </View>
             <View style={styles.button}>
-              <Button
-                title="Confirm"
-                onPress={confirmInputHandler}
-                color={Colors.primary}
-              />
+              <MainButton color={Colors.primary} onPress={confirmInputHandler}>
+                Confirm
+              </MainButton>
             </View>
           </View>
         </Card>
