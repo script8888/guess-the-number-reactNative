@@ -88,7 +88,7 @@ function GameScreen(props) {
       <View style={styles.scrollView_parent}>
         <FlatList
           contentContainerStyle={styles.scrollView}
-          keyExtractor={(item) => item}
+          keyExtractor={(item, index) => `${index}`}
           data={guesses}
           renderItem={renderListItem.bind(this, guesses.length)}
         />
