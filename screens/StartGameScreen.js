@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -18,6 +18,27 @@ function StartGameScreen(props) {
   const [enteredValue, setEnteredValue] = useState("");
   const [confirmed, setConfirmed] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState();
+  const [widths, setWidths] = useState({
+    buttonWidth: Dimensions.get("window").width / 4,
+    inputContainerWidth: Dimensions.get("window").width / 1,
+  });
+
+  useEffect(() => {
+    const updateLayout = (e) => {
+      const { width } = e.window;
+      setWidths((allWidth) => ({
+        buttonWidth: width / 4,
+        inputContainerWidth: width / 1,
+      }));
+    };
+    const dimensionsHandler = Dimensions.addEventListener(
+      "change",
+      updateLayout
+    );
+    return () => {
+      dimensionsHandler.remove();
+    };
+  });
 
   const numInputHandler = (text) => {
     setEnteredValue(text.replace(/[^0-9]/g, ""));
@@ -61,7 +82,12 @@ function StartGameScreen(props) {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.screen}>
         <Text style={styles.title}>Start a New Game!</Text>
-        <Card style={styles.inputContainer}>
+        <Card
+          style={{
+            ...styles.inputContainer,
+            width: widths.inputContainerWidth,
+          }}
+        >
           <BodyText>Select a Number</BodyText>
           <Input
             autoCapitalize="none"
@@ -75,7 +101,7 @@ function StartGameScreen(props) {
           />
 
           <View style={styles.buttonContainer}>
-            <View style={styles.button}>
+            <View style={{ width: widths.buttonWidth }}>
               <MainButton
                 color={Colors.accentColor}
                 onPress={resetInputHandler}
@@ -83,7 +109,7 @@ function StartGameScreen(props) {
                 Reset
               </MainButton>
             </View>
-            <View style={styles.button}>
+            <View style={{ width: widths.buttonWidth }}>
               <MainButton color={Colors.primary} onPress={confirmInputHandler}>
                 Confirm
               </MainButton>
@@ -104,7 +130,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   inputContainer: {
-    width: 300,
     maxWidth: "80%",
     alignItems: "center",
   },
@@ -113,13 +138,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   buttonContainer: {
+    overflow: "hidden",
     flexDirection: "row",
     width: "100%",
     justifyContent: "space-between",
     paddingHorizontal: 15,
-  },
-  button: {
-    width: Dimensions.get("window").width / 4,
   },
   chosenNumber: {
     marginTop: 18,
@@ -127,4 +150,5 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
 });
+
 export default StartGameScreen;
