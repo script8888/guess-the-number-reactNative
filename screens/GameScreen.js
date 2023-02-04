@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, ScrollView } from "react-native";
 import Card from "../components/Card";
 import MainButton from "../components/MainButton";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,12 +16,21 @@ const generateRandomBetween = (min, max, exclude) => {
   }
 };
 
+const renderListItem = (data, numOfRound) => {
+  return (
+    <View key={data} style={styles.listItem}>
+      <Text>#{numOfRound}</Text>
+      <Text>{data}</Text>
+    </View>
+  );
+};
 function GameScreen(props) {
+  const initialGuess = generateRandomBetween(1, 100, props.userChoice);
   const [currentGuess, setCurrentGuess] = useState(
     generateRandomBetween(1, 100, props.userChoice)
   );
 
-  const [rounds, setRounds] = useState(0);
+  const [guesses, setGuesses] = useState([initialGuess]);
 
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
@@ -29,7 +38,7 @@ function GameScreen(props) {
   const { userChoice, onGameOver } = props;
   useEffect(() => {
     if (currentGuess === userChoice) {
-      props.onGameOver(rounds);
+      props.onGameOver(guesses.length);
     }
   }, [currentGuess, userChoice, onGameOver]);
 
@@ -45,7 +54,7 @@ function GameScreen(props) {
     if (direction === "lower") {
       currentHigh.current = currentGuess;
     } else {
-      currentLow.current = currentGuess;
+      currentLow.current = currentGuess + 1;
     }
 
     const nextNumber = generateRandomBetween(
@@ -54,7 +63,7 @@ function GameScreen(props) {
       currentGuess
     );
     setCurrentGuess(nextNumber);
-    setRounds((round) => round + 1);
+    setGuesses((guess) => [nextNumber, ...guess]);
   };
 
   return (
@@ -76,6 +85,11 @@ function GameScreen(props) {
           <Ionicons name="md-add" size={24} color="white" />
         </MainButton>
       </Card>
+      <View style={styles.scrollView_parent}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          {guesses.map((data, i) => renderListItem(data, guesses.length - i))}
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -92,6 +106,23 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 300,
     maxWidth: "80%",
+  },
+  scrollView_parent: {
+    width: "80%",
+    height: "100%",
+    flex: 1,
+    marginBottom: 100,
+  },
+  scrollView: { alignItems: "center", justifyContent: "flex-end", flexGrow: 1 },
+  listItem: {
+    borderColor: "#000",
+    padding: 15,
+    marginVertical: 10,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "60%",
   },
 });
 export default GameScreen;

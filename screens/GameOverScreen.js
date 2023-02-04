@@ -5,7 +5,10 @@ import MainButton from "../components/MainButton";
 function GameOverScreen(props) {
   return (
     <View style={styles.screen}>
-      <Text>GAME OVER at round {props.round} BITCHESS</Text>
+      <Text>
+        GAME OVER at round <Text style={styles.highlight}>{props.round}</Text>{" "}
+        BITCHESS
+      </Text>
       <Image
         style={styles.image}
         source={{
