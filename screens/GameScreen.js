@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, StyleSheet, Alert, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Alert, FlatList } from "react-native";
 import Card from "../components/Card";
 import MainButton from "../components/MainButton";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,11 +16,11 @@ const generateRandomBetween = (min, max, exclude) => {
   }
 };
 
-const renderListItem = (data, numOfRound) => {
+const renderListItem = (listLength, itemData) => {
   return (
-    <View key={data} style={styles.listItem}>
-      <Text>#{numOfRound}</Text>
-      <Text>{data}</Text>
+    <View style={styles.listItem}>
+      <Text>#{listLength - itemData.index}</Text>
+      <Text>{itemData.item}</Text>
     </View>
   );
 };
@@ -30,7 +30,7 @@ function GameScreen(props) {
     generateRandomBetween(1, 100, props.userChoice)
   );
 
-  const [guesses, setGuesses] = useState([initialGuess]);
+  const [guesses, setGuesses] = useState([initialGuess.toString()]);
 
   const currentLow = useRef(1);
   const currentHigh = useRef(100);
@@ -63,7 +63,7 @@ function GameScreen(props) {
       currentGuess
     );
     setCurrentGuess(nextNumber);
-    setGuesses((guess) => [nextNumber, ...guess]);
+    setGuesses((guess) => [nextNumber.toString(), ...guess]);
   };
 
   return (
@@ -86,9 +86,12 @@ function GameScreen(props) {
         </MainButton>
       </Card>
       <View style={styles.scrollView_parent}>
-        <ScrollView contentContainerStyle={styles.scrollView}>
-          {guesses.map((data, i) => renderListItem(data, guesses.length - i))}
-        </ScrollView>
+        <FlatList
+          contentContainerStyle={styles.scrollView}
+          keyExtractor={(item) => item}
+          data={guesses}
+          renderItem={renderListItem.bind(this, guesses.length)}
+        />
       </View>
     </View>
   );
@@ -109,11 +112,10 @@ const styles = StyleSheet.create({
   },
   scrollView_parent: {
     width: "80%",
-    height: "100%",
     flex: 1,
     marginBottom: 100,
   },
-  scrollView: { alignItems: "center", justifyContent: "flex-end", flexGrow: 1 },
+  scrollView: { justifyContent: "flex-end", flexGrow: 1 },
   listItem: {
     borderColor: "#000",
     padding: 15,
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "60%",
+    width: "100%",
   },
 });
 export default GameScreen;
